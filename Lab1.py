@@ -6,6 +6,8 @@ from collections import namedtuple
 
 V2 = namedtuple('Point2', ['x', 'y'])
 V3 = namedtuple('Point3', ['x', 'y', 'z'])
+white = bytes([255, 255, 255])
+black = bytes([0, 0, 0])
 
 def char(c):
     return struct.pack('=c', c.encode('ascii'))
@@ -125,7 +127,7 @@ class Render(object):
         f.close()
 
     #Pintar punto
-    def glVertex(self, x, y):
+    def glVertex(self, x, y, color):
         if self.poin:
             xn = (x + 1)*(self.widthw/2) + self.xw
             yn = (y + 1)*(self.heightw/2) + self.yw
@@ -134,7 +136,7 @@ class Render(object):
         else:
             xn = x
             yn = y
-        self.framebuffer[yn][xn] = self.color
+        self.framebuffer[yn][xn] = color
 
     #Color del punto
     def glColor(self, r, g, b):
@@ -143,7 +145,7 @@ class Render(object):
         b = int(b * 255)
         self.color = bytes([b, g, r])
 
-    def triangle(self, A, B, C, color=None):
+    def triangle(self, A, B, C, color):
         #bounding box
         bbox_min, bbox_max = bbox(A, B, C)
 
@@ -155,7 +157,7 @@ class Render(object):
                     #no lo pinta
                     continue
                 #pintar punto
-                self.glVertex(x, y)
+                self.glVertex(x, y, color)
 
     #Pintar una linea de un punto a otro. Se optimizo el algoritmo evitando el uso de round y divisiones
     def glLine(self, x1n, y1n, x2n, y2n):
@@ -181,9 +183,9 @@ class Render(object):
         #Pintar puntos
         for x in range(x1n, x2n):
             if emp:
-                self.glVertex(y, x)
+                self.glVertex(y, x, white)
             else:
-                self.glVertex(x, y)
+                self.glVertex(x, y, white)
 
             offset += dy * 2
             if offset >= threshold:
@@ -198,13 +200,41 @@ bitmap.glClearColor(0, 0, 0)
 bitmap.glColor(1, 1, 1)
 bitmap.poin = False
 #Poligono 1
-bitmap.triangle(V2(165, 380), V2(185, 360), V2(193, 383))
-bitmap.triangle(V2(185, 360), V2(207, 345), V2(180, 330))
-bitmap.triangle(V2(207, 345), V2(233, 330), V2(230, 360))
-bitmap.triangle(V2(230, 360), V2(250, 380), V2(220, 385))
-bitmap.triangle(V2(220, 385), V2(205, 410), V2(193, 383))
-bitmap.triangle(V2(193, 383), V2(185, 360), V2(230, 360))
-bitmap.triangle(V2(185, 360), V2(207, 345), V2(230, 360))
-bitmap.triangle(V2(230, 360), V2(220, 385), V2(193, 383))
+bitmap.triangle(V2(165, 380), V2(185, 360), V2(193, 383), white)
+bitmap.triangle(V2(185, 360), V2(207, 345), V2(180, 330), white)
+bitmap.triangle(V2(207, 345), V2(233, 330), V2(230, 360), white)
+bitmap.triangle(V2(230, 360), V2(250, 380), V2(220, 385), white)
+bitmap.triangle(V2(220, 385), V2(205, 410), V2(193, 383), white)
+bitmap.triangle(V2(193, 383), V2(185, 360), V2(230, 360), white)
+bitmap.triangle(V2(185, 360), V2(207, 345), V2(230, 360), white)
+bitmap.triangle(V2(230, 360), V2(220, 385), V2(193, 383), white)
+
+#Poligono 2
+bitmap.triangle(V2(288, 286), V2(321, 335), V2(374, 302), white)
+bitmap.triangle(V2(288, 286), V2(339, 251), V2(374, 302), white)
+
+#Poligono 3 
+bitmap.triangle(V2(377, 249), V2(411, 197), V2(436, 249), white)
+
+
+#Poligono 4 
+bitmap.triangle(V2(413, 177), V2(448, 159), V2(466, 180), white)
+bitmap.triangle(V2(448, 159), V2(517, 144), V2(466, 180), white)
+bitmap.triangle(V2(448, 159), V2(517, 144), V2(502, 88), white)
+bitmap.triangle(V2(517, 144), V2(553, 53), V2(502, 88), white)
+bitmap.triangle(V2(517, 144), V2(553, 53), V2(552, 214), white)
+bitmap.triangle(V2(750, 145), V2(761, 179), V2(672, 192), white)
+bitmap.triangle(V2(750, 145), V2(660, 52), V2(672, 192), white)
+bitmap.triangle(V2(553, 53), V2(535, 36), V2(660, 52), white)
+bitmap.triangle(V2(676, 37), V2(535, 36), V2(660, 52), white)
+bitmap.triangle(V2(553, 53), V2(552, 214), V2(660, 52), white)
+bitmap.triangle(V2(659, 214), V2(552, 214), V2(660, 52), white)
+bitmap.triangle(V2(672, 192), V2(659, 214), V2(660, 52), white)
+bitmap.triangle(V2(580, 230), V2(632, 230), V2(615, 214), white)
+bitmap.triangle(V2(580, 230), V2(597, 215), V2(615, 214), white)
+
+#Poligono 5 
+bitmap.triangle(V2(682, 175), V2(735, 148), V2(708, 120), black)
+bitmap.triangle(V2(682, 175), V2(735, 148), V2(739, 170), black)
 
 bitmap.glFinish('resultado.bmp')
